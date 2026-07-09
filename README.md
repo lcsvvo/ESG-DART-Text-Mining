@@ -1,9 +1,8 @@
 # ESG Disclosure Language vs. ESG Ratings
-### Talk–Walk Gap: 공시 언어와 ESG 평가 사이의 간극을 측정하는 프레임워크
 
-**More ESG words do not mean a better ESG rating — disclosure volume does most of the talking.**
+ESG 공시 언어와 외부 ESG 평가(KCGS 등급) 사이의 간극을 측정하는 텍스트 마이닝 프로젝트입니다. 상장기업 사업보고서의 ESG 관련 서술을 분석해, 공시에서 사용하는 언어가 외부 평가와 얼마나 정합하는지를 살펴봅니다.
 
-사업보고서의 ESG 공시 "언어"가 외부 ESG "평가"(KCGS 등급)와 실제로 정합하는지를, 127개 상장기업 × 2022–2024년(381 firm-year)으로 진단한 공시 연구 프로젝트
+4인 팀 프로젝트로, 데이터 수집·전처리·feature 설계·통계 분석을 공동으로 수행했습니다.
 
 ![Data](https://img.shields.io/badge/data-DART%20사업보고서-blue)
 ![Sample](https://img.shields.io/badge/sample-381%20firm--year-blueviolet)
@@ -70,55 +69,10 @@
 | 구분 | 도구 |
 |---|---|
 | 언어 | Python 3.x |
-| 데이터 수집 | OpenDART API · requests · lxml · BeautifulSoup |
-| 한국어 처리 | Kiwi (kiwipiepy) · KoNLPy(Okt) + 사용자 사전 |
-| Feature | scikit-learn TF-IDF (seed → FastText 확장 사전 → cosine 유사도) |
-| 통계·회귀 | Spearman · Mann-Whitney U / Kruskal-Wallis · OLS · Ordered/Binary Logit |
-| 시각화 | matplotlib |
-
----
-
-## 파이프라인
-
-```
-사업보고서 원문 (DART)
-   ↓  섹션 추출 (II / IV / VI)
-ESG 관련 단락(passage)
-   ↓  Kiwi 형태소 분석 + 사용자 사전
-토큰
-   ↓  TF-IDF (seed → 확장 사전 → cosine 유사도)
-숫자 feature (E/S/G 점수, 분량 등)
-   ↓  Spearman·Mann-Whitney 검증 → OLS / Ordered Logit / Binary Logit
-통계적 연관성 → 해석 + 한계
-```
-
-각 화살표가 하나의 방법론적 선택. "문장이 어떻게 숫자가 되었는지", "그 숫자가 회귀식에서 무엇을 의미하는지"는 [`notebook/3조_분석노트북.ipynb`](notebook/3조_분석노트북.ipynb)의 Decision Box에 단계별 기록.
-
----
-
-## 설계 의사결정
-
-> 핵심은 결과 수치가 아니라 "왜 그렇게 설계했는가". 채택하지 않은 방법과 제외한 산출물까지 기록.
-
-| 결정 | 이유 |
-|---|---|
-| 식별자 기반 병합 (회사명 X) | `stock_code → corp_code → rcept_no → fiscal_year` 계보로 firm-year 정합성 보장, 회사명 병합 오류 차단 |
-| 분량(log_n_tokens) 통제 | 분량이 ESG 언어보다 강한 신호 → 통제하지 않으면 신호가 과대평가됨. 통제 후 G만 잔존 |
-| 회귀 3종 병행 | OLS·Ordered Logit·Binary Logit 교차 확인 — 등급의 순서형 특성·이분화에도 결론이 일관되는지 검증 (가정 위반 차원은 방향성만 해석) |
-| TF-IDF 채택, SBERT 제외 | dense 임베딩(`ko-sroberta-multitask`)이 단어 기반 TF-IDF보다 성능 낮음 → 채택 안 한 결과도 정직하게 기록 |
-| N=209 pilot 표 공개 제외 | 최종 N=381과 결론이 충돌(G 계수 부호 상이)·혼동 우려 → "없는 것이 틀린 것보다 낫다"는 재현성 우선 원칙 |
-
-> 해석은 "~와 연관된다" 수준에 한정. "개선한다·예측한다·야기한다"는 쓰지 않음 — association ≠ causation.
-
----
-
-## 핵심 결과
-
-네 가지 발견이 분량 효과 → 거버넌스 신호 → Talk–Walk Matrix → 선택적 공시 순으로 이어지며, 모든 수치는 N=381 표본 기준.
-
-**발견 1 — 가장 강한 신호는 ESG 어휘가 아니라 분량이다.** KCGS 등급과의 Spearman ρ 비교에서 단순 토큰 수(log_n_tokens, ρ=0.663)가 모든 ESG 단어 기반 feature보다 등급과 강하게 연관. 수치는 논문 Table 2(`paper/`).
-
-**발견 2 — 분량을 걷어내면 거버넌스만 남는다. 이 결과가 이후 Talk–Walk Gap 계산의 전제가 된다.** 분량·규모를 통제한 M1→M2 회귀에서 G feature만 유의하게 잔존(β=1.955, p<0.001), E·S 신호는 약해지거나 사라진다.
+| 데이터 수집 | OpenDART API, requests, BeautifulSoup |
+| 한국어 처리 | Kiwi (kiwipiepy), KoNLPy |
+| Feature | scikit-learn TF-IDF, FastText |
+| 통계 | Spearman, Mann-Whitney, OLS, Ordered/Binary Logit |
 
 <p align="center">
   <img src="paper/figures/fig1_governance_survives_controls.png" width="700" alt="분량·규모 통제 후 거버넌스 신호만 잔존"><br>
@@ -200,48 +154,28 @@ ESG 관련 단락(passage)
 <br>
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/jiwooo411/ESG_DART_Project.git
 cd ESG_DART_Project
 pip install -r requirements.txt
 
 cp config.example.py config.py
 export OPENDART_API_KEY=<발급받은 키>
 
-jupyter notebook notebook/3조_분석노트북.ipynb   # 전체 분석 (Decision Box 포함)
+jupyter notebook notebook/3조_분석노트북.ipynb
 ```
 
-원본 사업보고서 ZIP/XML과 KCGS 등급 CSV는 용량·라이선스 문제로 미포함. 재수집 절차: `scripts/01_collect.py` · `research_log/recovery_N381/collect_381.py`.
-
-</details>
-
-<details>
-<summary><b>협업 규칙</b></summary>
-
-<br>
-
-팀 저장소 기준 협업 흐름. AI 에이전트(Claude · Codex 등) 작업 시에도 동일 규칙 준수. 상세: [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-- **흐름.** `main` pull → 작업 브랜치 → commit → push → PR → 리뷰 → merge.
-- **브랜치 네이밍.** `<type>/<short-topic>`. `claude/*`·`codex/*` 임의 브랜치 금지.
-- **커밋.** [Conventional Commits](https://www.conventionalcommits.org) — `feat`·`fix`·`docs`·`refactor`·`chore`.
-- **PR.** 무엇을·왜·리뷰 포인트만 간단히. merge는 팀 확인 후 수행.
-
-</details>
-
----
+원본 사업보고서와 KCGS 등급 데이터는 라이선스 문제로 미포함되어 있습니다.
 
 ## 저장소 구조
 
 ```
 .
-├── README.md · CONTRIBUTING.md · LICENSE · requirements.txt · config.example.py
-├── paper/         # 최종 논문(docx) + figures (fig1·fig2)
-├── notebook/      # 3조_분석노트북.ipynb — 최종 분석 (Decision Box 포함)
+├── notebook/      # 분석 노트북
 ├── src/           # 수집·전처리·feature 빌드 모듈
-├── scripts/       # 파이프라인 실행 스크립트 (01~05 단계)
-├── data/          # README + sample(127사/381 firm-year 정의) + dictionary(E/S/G 사전)
-├── research_log/  # reports · recovery_pilot · recovery_N381 · notebooks_archive
-└── results/       # validation(Spearman·Mann-Whitney·분량직교성, N=381) + tables(NOTE)
+├── scripts/       # 파이프라인 실행 스크립트
+├── data/          # 데이터 설명 (원본 미포함)
+├── paper/         # 분석 보고서
+└── results/       # 검증 결과
 ```
 
 > 원본 데이터·API 키·N=209 stale 산출물은 `.gitignore`로 제외. `results/tables/`를 비워 둔 이유는 [`results/tables/NOTE.md`](results/tables/NOTE.md) 참조 — 잘못된 표보다 빈 폴더를 택함.

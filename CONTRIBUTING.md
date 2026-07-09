@@ -10,7 +10,7 @@
 
 ## 브랜치 네이밍
 
-`<type>/<short-topic>` 형식. 예: `docs/readme-polish`, `feat/token-classifier`, `fix/merge-key`.
+`<type>/<short-topic>` 형식. 예: `docs/readme-polish`, `feature/token-classifier`, `fix/merge-key`.
 
 `claude/*`·`codex/*` 같은 임의 브랜치는 만들지 않는다.
 
