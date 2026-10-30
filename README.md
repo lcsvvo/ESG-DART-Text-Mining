@@ -28,6 +28,7 @@
 2. **한국어 문장을 분석용 토큰으로 변환**
 
    - **Kiwi 형태소 분석**에 사용자 사전과 불용어 목록 적용
+   - 기존 비교에서 사용자 사전 적용 후 ESG 핵심어 보존율 **60% → 93%**, 복합어 보존을 기준으로 Kiwi 채택
    - ESG 관련 표현과 상투적 재무 표현을 구분하고 보고서별 분량 계산
 
 3. **ESG 어휘 점수 생성**
@@ -78,12 +79,18 @@ flowchart LR
 
 - 공시 언어와 등급의 상대적 위치가 다른 유형은 **168개 기업-연도**, 전체의 약 **44%**
 - 유형별 규모는 과잉공시 **72**, 과소공시 **96**, 정합 **119**, 일관저조 **94**
+- 기업 규모를 추가로 통제한 비교 표본 **N=363**에서도 기존 유형과의 일치율 **90.9%**
 - 분류는 언어와 등급의 상대적 차이이며, 실제 ESG 성과나 그린워싱 여부를 판정한 결과가 아님
 
 <p align="center">
   <img src="paper/figures/fig2_talkwalk_gap_quadrant.png" width="900" alt="공시 언어와 KCGS 등급의 중앙값 기준 4분면과 유형별 규모">
 </p>
 <p align="center"><sub>분량을 조정한 언어 점수와 등급의 중앙값 기준 분류, N=381.</sub></p>
+
+### Differences Across ESG Dimensions
+
+- **381개 기업-연도 중 180개, 47.2%**에서 한 ESG 축의 공시 언어는 등급보다 상대적으로 높고 다른 축은 낮게 나타남
+- 종합 점수에서 가려지는 E, S, G 축별 차이이며, 실제 과장이나 은폐 여부를 판정한 결과가 아님
 
 ## Limitations
 
@@ -104,3 +111,4 @@ flowchart LR
 ```
 
 [Notebook](notebook/README.md), [Scripts](scripts/README.md), [Source](src/README.md), [Data](data/README.md), [Results](results/README.md), [Paper](paper/README.md)
+
