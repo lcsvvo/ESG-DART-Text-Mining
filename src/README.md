@@ -1,17 +1,17 @@
-# src — 수집·전처리·feature 모듈
+# Source
 
-파이프라인 각 단계를 구성하는 재사용 모듈. 실행 진입점은 [`scripts/`](../scripts), 최종 분석은 [`notebook/`](../notebook).
+**자료 수집, 한국어 전처리, 특성 생성**의 공통 모듈.
 
-| 모듈 | 역할 |
+| Module | Content |
 |---|---|
-| `dart_api.py` | DART OpenAPI 호출 (사업보고서 원문 수집) |
-| `section_extractor.py` | 보고서 II / IV / VI 섹션 추출 |
-| `passage_filter.py` | ESG 관련 패시지(단락) 추출 |
-| `preprocessor.py` | 전처리 실험 설정 (형태소·정규화 옵션) |
-| `chunked_tokenize.py` | 배치 토크나이저 (타임아웃 우회) |
-| `token_classifier.py` | 토큰 5범주 자동 분류기 |
-| `token_audit.py` · `apply_manual_taxonomy.py` | 토큰 분류 감사·수동 taxonomy 보정 |
-| `feature_builder.py` | firm-year 단위 scalar feature 계산 (E/S/G 점수, 분량 등) |
-| `kcgs_merge.py` | feature × KCGS 등급 병합 (식별자 체인 기준) |
+| [dart_api.py](dart_api.py) | OpenDART API 호출과 보고서 다운로드 |
+| [section_extractor.py](section_extractor.py) | 사업보고서 섹션 추출 |
+| [passage_filter.py](passage_filter.py) | ESG 관련 단락 추출 |
+| [preprocessor.py](preprocessor.py) | 형태소와 정규화 처리 |
+| [chunked_tokenize.py](chunked_tokenize.py) | 배치 토큰화 |
+| [token_classifier.py](token_classifier.py) | 토큰 범주 분류 |
+| [token_audit.py](token_audit.py), [apply_manual_taxonomy.py](apply_manual_taxonomy.py) | 토큰 분류 점검과 수동 보정 |
+| [feature_builder.py](feature_builder.py) | 기업-연도별 ESG 특성과 분량 계산 |
+| [kcgs_merge.py](kcgs_merge.py) | 기업 식별자 기준 등급 결합 |
 
-> 회사명이 아니라 `stock_code → corp_code → rcept_no → fiscal_year` 식별자 체인으로 병합 ([`kcgs_merge.py`](kcgs_merge.py)).
+실행 진입점은 [Scripts](../scripts/README.md), 최종 통합 분석은 [Notebook](../notebook/README.md) 참조.
