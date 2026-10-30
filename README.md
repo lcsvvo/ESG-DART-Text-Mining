@@ -50,16 +50,17 @@
 ## Analysis Workflow
 
 ```mermaid
-%%{init: {"flowchart": {"nodeSpacing": 25, "rankSpacing": 20}}}%%
+%%{init: {"flowchart": {"nodeSpacing": 25, "rankSpacing": 12}}}%%
 flowchart LR
     A["사업보고서"] -->|OpenDART| B["섹션 추출<br/>Kiwi 토큰화"]
-    B --> C["TF-IDF<br/>FastText, 유사도<br/>등급 결합"]
-    C -->|분량, 규모 통제| E["OLS<br/>순서형, 이진 로짓"]
-    C -->|상관, 집단 비교| F["Spearman<br/>Mann–Whitney"]
+    B --> C["TF-IDF<br/>FastText<br/>유사도"]
+    C -->|등급 연결| D["기업별 분석표"]
+    D -->|분량, 규모 통제| E["OLS<br/>순서형, 이진 로짓"]
+    D -->|상관, 집단 비교| F["Spearman<br/>Mann–Whitney"]
     E --> G["Talk–Walk<br/>유형 분류"]
     F --> G
     classDef step fill:#ede9fe,stroke:#8b5cf6,color:#111827;
-    class B,C,E,F step;
+    class B,C,D,E,F step;
 ```
 
 ## Key Results
